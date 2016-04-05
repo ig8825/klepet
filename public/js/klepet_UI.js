@@ -99,6 +99,14 @@ $(document).ready(function() {
     for (var i=0; i < uporabniki.length; i++) {
       $('#seznam-uporabnikov').append(divElementEnostavniTekst(uporabniki[i]));
     }
+    
+    /*ob kliku na vzdevek klici hitraZasebna za hitrejse posiljanje zasebnih sporocil (bliznjica)*/
+    $('#seznam-uporabnikov div').click(function() {
+      var vzdevek = $(this).text();
+      klepetApp.hitraZasebna($(this).text());
+      //console.log($(this).text());
+      $('#poslji-sporocilo').focus();
+    })
   });
 
   setInterval(function() {
