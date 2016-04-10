@@ -1,11 +1,23 @@
 function divElementEnostavniTekst(sporocilo) {
   var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
+  var jeSlika = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
   if (jeSmesko) {
     sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace('&lt;img', '<img').replace('png\' /&gt;', 'png\' />');
     return $('<div style="font-weight: bold"></div>').html(sporocilo);
   } else {
     return $('<div style="font-weight: bold;"></div>').text(sporocilo);
   }
+  
+  var url = sporocilo.match(/((http|https)?:\/\/.*\.(?:jpg|png|gif))/ig);
+
+  if(url != null) {
+   sporocilo.append("<div class=slike><img src=" + url  + " width=200></div>");
+  }
+  
+  if(url != null) {
+    return $('<div style="font-weight: bold"></div>').html(sporocilo);
+  }
+  
 }
 
 function divElementHtmlTekst(sporocilo) {
@@ -15,18 +27,23 @@ function divElementHtmlTekst(sporocilo) {
 function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
   sporocilo = dodajSmeske(sporocilo);
+  sporocilo = prikaziSlike(sporocilo);
   var sistemskoSporocilo;
 
   if (sporocilo.charAt(0) == '/') {
     sistemskoSporocilo = klepetApp.procesirajUkaz(sporocilo);
     if (sistemskoSporocilo) {
       $('#sporocila').append(divElementHtmlTekst(sistemskoSporocilo));
+      prikaziSlike(sporocilo);
     }
   } else {
     sporocilo = filtirirajVulgarneBesede(sporocilo);
     klepetApp.posljiSporocilo(trenutniKanal, sporocilo);
     $('#sporocila').append(divElementEnostavniTekst(sporocilo));
+    /*za pretvarjanje html-ja za slike*/
+    //$('#sporocila').append(divElementEnostavniTekstZaSlike(sporocilo));
     $('#sporocila').scrollTop($('#sporocila').prop('scrollHeight'));
+    //prikaziSlike(sporocilo);
   }
 
   $('#poslji-sporocilo').val('');
@@ -130,4 +147,15 @@ function dodajSmeske(vhodnoBesedilo) {
       preslikovalnaTabela[smesko] + "' />");
   }
   return vhodnoBesedilo;
+}
+
+/*prikaz slik*/
+function prikaziSlike(vhod)  {
+  var url = vhod.match(/((http|https)?:\/\/.*\.(?:jpg|png|gif))/ig);
+
+  if(url != null) {
+  //vhod = vhod.replace(url, " <img src='" + url + "' /> ");
+   $("#sporocila").append("<div class=slike><img src=" + url  + " width=200></div>");
+  }
+  return vhod;
 }
