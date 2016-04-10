@@ -16,6 +16,12 @@ Klepet.prototype.spremeniKanal = function(kanal) {
   });
 };
 
+/*hitra zasebna sporocila*/
+Klepet.prototype.hitraZasebna = function(vzdevek) {
+  document.getElementById("poslji-sporocilo").value = '/zasebno "' + vzdevek + '"';
+  // $('#poslji-sporocilo').text('/zasebno "' + vzdevek + '"');
+}
+
 Klepet.prototype.procesirajUkaz = function(ukaz) {
   var besede = ukaz.split(' ');
   ukaz = besede[0].substring(1, besede[0].length).toLowerCase();
